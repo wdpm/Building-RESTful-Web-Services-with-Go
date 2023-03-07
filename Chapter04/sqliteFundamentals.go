@@ -45,8 +45,15 @@ func main() {
 	statement.Exec("The Tale of Two Cities", 1)
 	log.Println("Successfully updated the book in database!")
 
-	//Delete
+	// Delete
 	statement, _ = db.Prepare("delete from books where id=?")
 	statement.Exec(1)
 	log.Println("Successfully deleted the book in database!")
 }
+
+// 2023/03/05 15:20:18 &{0 {./books.db 0xc000068020} 0 {0 0} [] map[] 0 0 0xc000026120 false map[] map[] 0 0 0 0 <nil> 0 0 0 0 0x48ab20}
+// 2023/03/05 15:20:18 Successfully created table books!
+// 2023/03/05 15:20:18 Inserted the book into database!
+// 2023/03/05 15:20:18 ID:1, Book:A Tale of Two Cities, Author:Charles Dickens
+// 2023/03/05 15:20:18 Successfully updated the book in database!
+// 2023/03/05 15:20:18 Successfully deleted the book in database!

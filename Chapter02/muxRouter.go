@@ -18,6 +18,7 @@ func main() {
 	// Create a new router
 	r := mux.NewRouter()
 	// Attach an elegant path with handler
+	// GET http://localhost:8000/articles/anime/1
 	r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
 	srv := &http.Server{
 		Handler: r,

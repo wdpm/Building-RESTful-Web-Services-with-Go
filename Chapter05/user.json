@@ -6,14 +6,14 @@
 	first_name: "John",
 	last_name: "Pauling",
 	address_multiple: [{
-		type: "home"
+		type: "home",
 		street: "601 Sherwood Ave",
 		city: "San Bernardino",
 		state: "California",
 		pincode: 94565
 	}, 
 	{
-		type: "work"
+		type: "work",
 		street: "241 Indian Spring St",
 		city: "Pittsburg",
 		state: "California",

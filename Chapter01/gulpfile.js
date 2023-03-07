@@ -6,9 +6,9 @@ gulp.task("install-binary", shell.task([
   'go install github.com/narenaryan/romanserver'
 ]));
 
-// Second argument tells install-binary is a deapendency for restart-supervisor
+// Second argument tells install-binary is a dependency for restart-supervisor
 gulp.task("restart-supervisor", ["install-binary"],  shell.task([
-  'supervisorctl restart myserver'
+  'supervisorctl restart romanserver'
 ]))
 
 gulp.task('watch', function() {
@@ -18,3 +18,5 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', ['watch']);
+
+//npm install gulp gulp-shell

@@ -15,7 +15,9 @@ const (
 )
 
 // server is used to create MoneyTransactionServer.
-type server struct{}
+type server struct {
+	pb.UnimplementedMoneyTransactionServer
+}
 
 // MakeTransaction implements MoneyTransactionServer.MakeTransaction
 func (s *server) MakeTransaction(ctx context.Context, in *pb.TransactionRequest) (*pb.TransactionResponse, error) {
@@ -38,4 +40,3 @@ func main() {
 		log.Fatalf("Failed to serve: %v", err)
 	}
 }
-

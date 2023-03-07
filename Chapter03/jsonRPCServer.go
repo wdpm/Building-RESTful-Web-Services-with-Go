@@ -5,7 +5,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/rpc"
 	"github.com/gorilla/rpc/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -25,15 +24,13 @@ type JSONServer struct{}
 
 func (t *JSONServer) GiveBookDetail(r *http.Request, args *Args, reply *Book) error {
 	var books []Book
-	raw, readerr := ioutil.ReadFile("./books.json")
+	raw, readerr := os.ReadFile("./books.json")
 	if readerr != nil {
-		log.Println("error:", readerr)
-		os.Exit(1)
+		log.Fatal("readerr:", readerr)
 	}
 	marshalerr := jsonparse.Unmarshal(raw, &books)
 	if marshalerr != nil {
-		log.Println("error:", marshalerr)
-		os.Exit(1)
+		log.Fatal("marshalerr:", marshalerr)
 	}
 	// Iterate over JSON data to find the given book
 	for _, book := range books {
@@ -51,6 +48,5 @@ func main() {
 	s.RegisterService(new(JSONServer), "")
 	r := mux.NewRouter()
 	r.Handle("/rpc", s)
-	http.ListenAndServe(":1234", r)
-
+	http.ListenAndServe(":12345", r)
 }

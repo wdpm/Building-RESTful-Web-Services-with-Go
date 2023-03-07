@@ -34,3 +34,6 @@ func main() {
 	}
 	log.Printf("Transaction confirmed: %t", r.Confirmation)
 }
+
+// 2023/03/07 11:33:47 Got request for money Transfer....
+// 2023/03/07 11:33:47 Amount: 1250.750000, From A/c:1234, To A/c:5678

@@ -11,7 +11,7 @@ type Args struct {
 func main() {
 	var reply int64
 	args := Args{}
-	client, err := rpc.DialHTTP("tcp", "localhost"+":1234")
+	client, err := rpc.DialHTTP("tcp", "localhost"+":12340")
 	if err != nil {
 		log.Fatal("dialing:", err)
 	}
@@ -21,3 +21,5 @@ func main() {
 	}
 	log.Printf("%d", reply)
 }
+
+// 2023/03/05 12:52:10 1677991930

@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 	"net"
+	"net/http"
 	"net/rpc"
 	"time"
-	"net/http"
 )
 
 type Args struct{}
@@ -21,7 +21,7 @@ func main() {
 	timeserver := new(TimeServer)
 	rpc.Register(timeserver)
 	rpc.HandleHTTP()
-	l, e := net.Listen("tcp", ":1234")
+	l, e := net.Listen("tcp", ":12340")
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/emicklei/go-restful"
+	restful "github.com/emicklei/go-restful/v3"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/narenaryan/dbutils"
 )
