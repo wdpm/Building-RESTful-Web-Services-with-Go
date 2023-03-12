@@ -8,7 +8,7 @@ import (
 
 func InitDB() (*sql.DB, error) {
 	var err error
-	db, err := sql.Open("postgres", "postgres://naren:passme123@localhost/mydb?sslmode=disable")
+	db, err := sql.Open("postgres", "postgres://wdpm:123456@172.20.218.221/mydb?sslmode=disable")
 	if err != nil {
 		return nil, err
 	} else {
@@ -18,7 +18,7 @@ func InitDB() (*sql.DB, error) {
 			log.Println(err)
 			return nil, err
 		}
-		res, err := stmt.Exec()
+		_, err = stmt.Exec()
 		if err != nil {
 			log.Println(err)
 			return nil, err

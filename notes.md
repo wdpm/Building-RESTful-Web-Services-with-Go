@@ -134,7 +134,7 @@ Id 1234 对应 args.Id：
 
 ```go
 type Args struct {
-	Id string
+Id string
 }
 ```
 
@@ -307,7 +307,8 @@ go get google.golang.org/grpc
 go get -u github.com/golang/protobuf/protoc-gen-go
 ```
 
-GRPC的优点：
+GRPC 的优点：
+
 - GRPC uses HTTP/2, which is a binary protocol => HTTP2
 - Header compression is possible in HTTP/2, which means less overhead => 头部压缩
 - We can multiplex many requests on one connection => 连接复用
@@ -320,22 +321,27 @@ GRPC的优点：
 # not work because of compatibility: mustEmbedUnimplementedMoneyTransactionServer
 protoc -I datafiles/ datafiles/transaction.proto --go-grpc_out=:datafiles
 ```
+
 书中这行命令无法执行。解决方案有两个：
 
-第一个：在编译时指定不强制implement servers，放宽限制。
+第一个：在编译时指定不强制 implement servers，放宽限制。
+
 ```bash
 # work
 protoc -I datafiles/ datafiles/transaction.proto --go-grpc_out=require_unimplemented_servers=false:datafiles
 ```
 
-第二个：在server side明确指示方法不实现。
+第二个：在 server side 明确指示方法不实现。
+
 ```
 // server is used to create MoneyTransactionServer.
 type server struct {
 	pb.UnimplementedMoneyTransactionServer
 }
 ```
+
 关联源码：
+
 ```
 // UnimplementedMoneyTransactionServer must be embedded to have forward compatible implementations.
 type UnimplementedMoneyTransactionServer struct {
@@ -346,4 +352,120 @@ type UnimplementedMoneyTransactionServer struct {
 
 ---
 
-双向消息交流。
+### 双向消息交流
+
+```
+protoc --go_out=. *.proto
+protoc -I datafiles/ datafiles/transaction.proto --go-grpc_out=require_unimplemented_servers=false:datafiles
+```
+
+## chapter 07
+
+goal:
+
+- Implementing a URL shortening service with PostgreSQL and a Base62 algorithm
+- Exploring the JSON store in PostgreSQL
+- Introducing gorm, a powerful ORM for Go
+- Implementation of an e-commerce REST API
+
+install postgreSQL in ubuntu
+> https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-database#install-postgresql
+
+```bash
+# optional: add repos or apt add key
+
+sudo apt install postgresql postgresql-contrib
+psql --version
+sudo passwd postgres
+# 123456
+```
+
+两种登陆 shell 的方式：
+
+```bash
+# switch user
+sudo su - postgres
+# then login
+psql
+```
+
+---
+
+```bash
+sudo -u postgres psql
+```
+
+不建议直接使用 postgres 用户，更改它的密码（123456）。这里，新建 user
+
+```bash
+CREATE ROLE wdpm with LOGIN PASSWORD '123456';
+ALTER USER wdpm CREATEDB CREATEROLE;
+```
+
+现在，需要设置，支持远程登录。
+- 主要是设置 hba.conf （0.0.0.0.0 md5,不要用scram算法）以及主 postgres.conf （localhost="*"）。
+> https://www.cybertec-postgresql.com/en/postgresql-on-wsl2-for-windows-install-and-setup/
+
+尝试登录：
+
+```bash
+wdpm  ~  ♥ 22:08  psql -U postgres -d postgres -h 172.20.218.221
+用户 postgres 的口令：
+psql (9.5.17, 服务器 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1))
+WARNING: psql major version 9.5, server major version 14.
+         Some psql features might not work.
+SSL 连接（协议：TLSv1.2，密码：ECDHE-RSA-AES256-GCM-SHA384，密钥位：256，压缩：关闭 )
+输入 "help" 来获取帮助信息.
+```
+
+- 172.20.218.221 是 WSL2 ubuntu 的一个短暂的 IP。这个 IP 每次重启电脑都会改变。
+
+---
+
+PostgreSQL also allows JSON storage (called the JSON store) past version 9.2.
+
+postgres 支持JSON 形式保存。
+
+## chapter 08
+
+cli tool & grequests
+
+github API
+
+## chapter 09
+
+- Introducing Go Kit, a microservice toolkit in Go
+- Creating a REST API with Go Kit
+- Adding logging to the API
+- Adding instrumentation to the API
+
+encryptService/, 对于helpers目录
+1. 首先创建models。定义数据结构
+2. 然后定义jsonutils，用于传输RQ时的编码，以及使用RS时的解码
+3. implementations.go 是加密解密的实现
+4. endpoints.go 是定义服务对外暴露的端口。
+
+```bash
+go run main.go
+```
+```bash
+$ curl -X POST -d '{"key":"111023043350789514532147", "text": "I am A Message"}' localhost:8080/encrypt
+{"message":"8/+JCfTb+ibIjzQtmCo=","error":""}
+```
+```bash
+curl -X POST -d '{"key":"111023043350789514532147", "message":"8/+JCfTb+ibIjzQtmCo="}' localhost:8080/decrypt
+{"text":"I am A Message","error":""}
+```
+
+---
+
+添加logging后，再次测试API，console 输出：
+```bash
+method=encrypt key=111023043350789514532147 text="I am A Message" output="8/+JCfTb+ibIjzQtmCo=" err=null took=0s
+method=decrypt key=111023043350789514532147 message="8/+JCfTb+ibIjzQtmCo=" output="I am A Message" err=null took=0s
+```
+took=0s，打印了等于没打印。
+
+---
+
+instrumentation (metrics), 使用 "github.com/go-kit/kit/metrics" 来测量指标。

@@ -1,10 +1,11 @@
 syntax = "proto3";
 package datafiles;
+option go_package = "./";
 
 message TransactionRequest {
-   string from = 1;
-   string to = 2;
-   float amount = 3;
+  string from = 1;
+  string to = 2;
+  float amount = 3;
 }
 
 message TransactionResponse {
@@ -14,5 +15,5 @@ message TransactionResponse {
 }
 
 service MoneyTransaction {
-    rpc MakeTransaction(TransactionRequest) returns (stream TransactionResponse) {}
+  rpc MakeTransaction(TransactionRequest) returns (stream TransactionResponse) {}
 }

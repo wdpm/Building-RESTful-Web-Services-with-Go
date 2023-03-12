@@ -16,3 +16,7 @@ func main() {
 	decryptedString := utils.DecryptString(key, encryptedString)
 	log.Println("Decrypted message: ", decryptedString)
 }
+
+// 2023/03/12 13:13:03 Original message:  I am A Message
+// 2023/03/12 13:13:03 Encrypted message:  8/+JCfTb+ibIjzQtmCo=
+// 2023/03/12 13:13:03 Decrypted message:  I am A Message

@@ -1,14 +1,13 @@
 package main
 
 import (
-       "log"
-      "github.com/narenaryan/models"
+	"github.com/narenaryan/models"
+	"log"
 )
 
-
 func main() {
-  db, err := models.InitDB()
-  if err != nil {
-    log.Println(db)
-  }
+	db, err := models.InitDB()
+	if err != nil {
+		log.Println(db)
+	}
 }

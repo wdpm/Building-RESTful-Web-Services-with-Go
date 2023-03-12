@@ -10,7 +10,7 @@ import (
 
 	kitlog "github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
-	"github.com/narenaryan/encryptService/helpers"
+	"github.com/narenaryan/encryptServiceWithInstrumentation/helpers"
 
 	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
 )
@@ -49,4 +49,3 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
-

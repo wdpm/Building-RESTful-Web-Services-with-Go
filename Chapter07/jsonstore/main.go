@@ -2,14 +2,14 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-    _ "github.com/lib/pq"
+	_ "github.com/lib/pq"
 	"github.com/narenaryan/jsonstore/models"
 )
 
@@ -33,7 +33,6 @@ func (driver *DBClient) GetUsersByFirstName(w http.ResponseWriter, r *http.Reque
 	driver.db.Raw(query, name).Scan(&users)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	//responseMap := map[string]interface{}{"url": ""}
 	respJSON, _ := json.Marshal(users)
 	w.Write(respJSON)
 }
@@ -50,7 +49,6 @@ func (driver *DBClient) GetUser(w http.ResponseWriter, r *http.Request) {
 	var response = UserResponse{User: user, Data: userData}
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	//responseMap := map[string]interface{}{"url": ""}
 	respJSON, _ := json.Marshal(response)
 	w.Write(respJSON)
 }
@@ -58,11 +56,11 @@ func (driver *DBClient) GetUser(w http.ResponseWriter, r *http.Request) {
 // PostUser adds URL to DB and gives back shortened string
 func (driver *DBClient) PostUser(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	postBody, _ := ioutil.ReadAll(r.Body)
+	postBody, _ := io.ReadAll(r.Body)
 	user.Data = string(postBody)
 	driver.db.Save(&user)
 	responseMap := map[string]interface{}{"id": user.ID}
-	var err string = ""
+	var err = ""
 	if err != "" {
 		w.Write([]byte("yes"))
 	} else {

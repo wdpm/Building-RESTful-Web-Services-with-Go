@@ -21,6 +21,7 @@ func main() {
 	// define action
 	app.Action = func(c *cli.Context) error {
 		var args []string
+		// arguments
 		if c.NArg() > 0 {
 			// Fetch arguments in a array
 			args = c.Args()
@@ -41,3 +42,9 @@ func main() {
 
 	app.Run(os.Args)
 }
+
+// ./storeMarks --save=no someone 100 101 102
+
+// 2023/03/09 20:59:20 Person:  someone
+// 2023/03/09 20:59:20 marks [100 101 102]
+// 2023/03/09 20:59:20 Skipping saving to the database

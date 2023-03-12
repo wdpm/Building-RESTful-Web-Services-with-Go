@@ -52,3 +52,8 @@ func main() {
 	ReceiveStream(client, &pb.TransactionRequest{From: from,
 		To: to, Amount: amount})
 }
+
+// 2023/03/07 20:42:33 Started listening to the server stream!
+// 2023/03/07 20:42:35 Status: good, Operation: Description of step 0
+// 2023/03/07 20:42:37 Status: good, Operation: Description of step 1
+// 2023/03/07 20:42:39 Status: good, Operation: Description of step 2

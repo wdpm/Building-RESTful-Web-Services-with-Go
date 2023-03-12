@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/levigross/grequests"
 	"github.com/urfave/cli"
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -22,7 +21,7 @@ type Repo struct {
 	Private  bool   `json:"private"`
 }
 
-// Structs for modelling JSON body in create Gist
+// File Structs for modelling JSON body in create Gist
 type File struct {
 	Content string `json:"content"`
 }
@@ -50,7 +49,7 @@ func createGist(url string, args []string) *grequests.Response {
 	// remaining arguments are file names with path
 	var fileContents = make(map[string]File)
 	for i := 1; i < len(args); i++ {
-		dat, err := ioutil.ReadFile(args[i])
+		dat, err := os.ReadFile(args[i])
 		if err != nil {
 			log.Println("Please check the filenames. Absolute path (or) same directory are allowed")
 			return nil
@@ -79,14 +78,14 @@ func main() {
 		{
 			Name:    "fetch",
 			Aliases: []string{"f"},
-			Usage:   "Fetch the repo details with user. [Usage]: goTool fetch user",
+			Usage:   "Fetch the repo details with user. [Usage]: goTool f user",
 			Action: func(c *cli.Context) error {
 				if c.NArg() > 0 {
 					// Github API Logic
-					var repos []Repo
 					user := c.Args()[0]
 					var repoUrl = fmt.Sprintf("https://api.github.com/users/%s/repos", user)
 					resp := getStats(repoUrl)
+					var repos []Repo
 					resp.JSON(&repos)
 					log.Println(repos)
 				} else {
@@ -98,7 +97,7 @@ func main() {
 		{
 			Name:    "create",
 			Aliases: []string{"c"},
-			Usage:   "Creates a gist from the given text. [Usage]: goTool name 'description' sample.txt",
+			Usage:   "Creates a gist from the given text. [Usage]: goTool c 'description' sample.txt",
 			Action: func(c *cli.Context) error {
 				if c.NArg() > 1 {
 					// Github API Logic

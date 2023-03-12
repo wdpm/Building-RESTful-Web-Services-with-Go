@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -14,12 +14,12 @@ import (
 	base62 "github.com/narenaryan/urlshortener/utils"
 )
 
-// DB stores the database session imformation. Needs to be initialized once
+// DBClient DB stores the database session imformation. Needs to be initialized once
 type DBClient struct {
 	db *sql.DB
 }
 
-// Model the record struct
+// Record Model the record struct
 type Record struct {
 	ID  int    `json:"id"`
 	URL string `json:"url"`
@@ -48,7 +48,7 @@ func (driver *DBClient) GetOriginalURL(w http.ResponseWriter, r *http.Request) {
 func (driver *DBClient) GenerateShortURL(w http.ResponseWriter, r *http.Request) {
 	var id int
 	var record Record
-	postBody, _ := ioutil.ReadAll(r.Body)
+	postBody, _ := io.ReadAll(r.Body)
 	json.Unmarshal(postBody, &record)
 	err := driver.db.QueryRow("INSERT INTO web_url(url) VALUES($1) RETURNING id", record.URL).Scan(&id)
 	responseMap := map[string]interface{}{"encoded_string": base62.ToBase62(id)}
