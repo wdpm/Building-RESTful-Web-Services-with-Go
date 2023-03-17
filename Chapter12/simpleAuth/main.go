@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+// 这里，这个store是内存型的，app一旦重启就会丢失用户登录状态的记录表。
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 var users = map[string]string{"naren": "passme", "admin": "password"}
 
@@ -34,9 +35,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.PostForm.Get("username")
 	password := r.PostForm.Get("password")
 	if originalPassword, ok := users[username]; ok {
+		// in real world should compare encrypted result
 		if password == originalPassword {
 			session.Values["authenticated"] = true
-			session.Save(r, w)
+			_ = session.Save(r, w)
 		} else {
 			http.Error(w, "Invalid Credentials", http.StatusUnauthorized)
 			return

@@ -13,8 +13,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// for dev/test only
+// var _ = os.Setenv("SESSION_SECRET", "123456")
+
 var secretKey = []byte(os.Getenv("SESSION_SECRET"))
-var users = map[string]string{"naren": "passme", "admin": "password"}
+
+// in real world, this should call database such as redis/mysql
+//
+//	a map: username to its password
+var users = map[string]string{"wdpm": "passme", "admin": "password"}
 
 // Response is a representation of JSON response for JWT
 type Response struct {
@@ -30,7 +37,6 @@ func HealthcheckHandler(w http.ResponseWriter, r *http.Request) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
 		return secretKey, nil
 	})
@@ -42,8 +48,8 @@ func HealthcheckHandler(w http.ResponseWriter, r *http.Request) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		// If token is valid
 		response := make(map[string]string)
-		// response["user"] = claims["username"]
 		response["time"] = time.Now().String()
+		// get username from JWT
 		response["user"] = claims["username"].(string)
 		responseJSON, _ := json.Marshal(response)
 		w.Write(responseJSON)
@@ -106,3 +112,11 @@ func main() {
 	}
 	log.Fatal(srv.ListenAndServe())
 }
+
+// 1. POST /getToken with user/pass => token
+// {
+//    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFeHBpcmVzQXQiOjE1MDAwLCJJc3N1ZWRBdCI6MTY3OTAyOTE3NCwidXNlcm5hbWUiOiJ3ZHBtIn0.7Dr3Vvw2GFSUYyqeFdPLA8FALDkRZ4FkMW2W-tSqiEE",
+//    "status": "success"
+// }
+// 2. GET /healthcheck with access_token in header
+// {"time":"2023-03-17 13:02:22.5154126 +0800 CST m=+190.129391101","user":"wdpm"}

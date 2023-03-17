@@ -10,6 +10,7 @@ import (
 	redistore "gopkg.in/boj/redistore.v1"
 )
 
+// 使用外部数据库来持久化用户登录状态的记录。
 var store, err = redistore.NewRediStore(10, "tcp", ":6379", "", []byte(os.Getenv("SESSION_SECRET")))
 var users = map[string]string{"naren": "passme", "admin": "password"}
 

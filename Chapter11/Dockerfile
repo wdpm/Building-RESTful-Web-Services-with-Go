@@ -11,5 +11,5 @@ RUN go get github.com/gorilla/mux
 # Install our package
 RUN go install github.com/narenaryan/kongExample
 
-# Run the outyet command by default when the container starts.
+# Run the outlet command by default when the container starts.
 ENTRYPOINT /go/bin/kongExample
